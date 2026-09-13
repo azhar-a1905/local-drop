@@ -33,8 +33,8 @@ body {
   margin: 0;
   min-height: 100vh;
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
+  align-items: safe center;
+  justify-content: safe center;
   padding: 24px;
   background:
     radial-gradient(
@@ -56,7 +56,8 @@ body {
     "Segoe UI",
     sans-serif;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .bg-blur {
@@ -478,8 +479,7 @@ button:disabled {
   box-shadow: none;
 }
 
-#join-screen.hidden,
-#room-screen.hidden {
+.hidden {
   display: none !important;
 }
 
