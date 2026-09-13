@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Local Drop</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="bg-blur blur-one"></div>
+    <div class="bg-blur blur-two"></div>
+
+    <main class="app-shell">
+      <div class="app-card">
+        <header class="topbar">
+          <div class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 64 64" role="img" aria-label="Local Drop logo">
+              <rect x="8" y="22" width="26" height="18" rx="3" />
+              <path d="M34 28h9l8 8v4h-17v-12z" />
+              <circle cx="20" cy="44" r="5" />
+              <circle cx="46" cy="44" r="5" />
+            </svg>
+          </div>
+          <div>
+            <p class="eyebrow">P2P file transfer</p>
+            <h1>Local Drop</h1>
+          </div>
+        </header>
+
+        <p class="tagline">
+          Send a file straight from this browser to another device. Fast, local,
+          and private.
+        </p>
+
+        <section id="join-screen" class="panel">
+          <div class="field-group">
+            <label for="room-input">Room code</label>
+            <input
+              id="room-input"
+              type="text"
+              inputmode="numeric"
+              maxlength="6"
+              placeholder="e.g. 482913"
+              autocomplete="off"
+            />
+          </div>
+
+          <button id="join-btn" class="primary-btn">Join / Create Room</button>
+          <p id="status-line" class="status">
+            <span class="status-dot"></span>Not connected
+          </p>
+        </section>
+
+        <section id="room-screen" class="panel hidden">
+          <div class="room-header">
+            <div>
+              <p class="eyebrow subtle">Active room</p>
+              <div class="room-badge">
+                <span>Room</span> <strong id="room-code-display">—</strong>
+                <button
+                  id="copy-room-btn"
+                  class="copy-room-btn"
+                  type="button"
+                  aria-label="Copy room code"
+                >
+                  Copy
+                </button>
+              </div>
+            </div>
+            <span id="peer-indicator" class="peer-indicator offline"
+              >Offline</span
+            >
+          </div>
+
+          <p id="peer-status" class="status neutral">
+            Waiting for the other device to join…
+          </p>
+
+          <div id="qr-wrap" class="qr-wrap hidden">
+            <div id="qr-code" class="qr-code"></div>
+            <p class="qr-caption">Scan with a phone camera to join instantly</p>
+            <div class="share-link-row">
+              <input id="share-link" type="text" readonly />
+              <button id="copy-link-btn" type="button">Copy</button>
+            </div>
+          </div>
+
+          <div id="transfer-area" class="hidden transfer-area">
+            <div class="file-picker-wrap">
+              <label class="file-picker" for="file-input">
+                <span class="picker-icon">＋</span>
+                <span class="picker-text">Choose a file</span>
+              </label>
+              <input id="file-input" type="file" />
+            </div>
+
+            <button id="send-btn" class="primary-btn" disabled>
+              Send file
+            </button>
+
+            <div class="progress-track" aria-label="Transfer progress">
+              <div id="progress-fill" class="progress-fill"></div>
+            </div>
+
+            <p id="transfer-status" class="status muted"></p>
+
+            <a id="download-link" class="hidden download-link" download>
+              Download received file
+            </a>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <div id="flight-plane" class="flight-plane" aria-hidden="true">
+      <div class="smoke">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <svg viewBox="0 0 64 64">
+        <path
+          d="M6 32.5c6.3-1.5 15.6-4.2 23.4-7.7l8.1-3.7c2.9-1.3 6.3-.1 7.6 2.8.9 2.1.4 4.5-1.3 6.1l-8 7.2c-2.1 1.9-4.7 3.3-7.5 4.1l-11.7 3.8c-1.2.4-2.5-.3-2.9-1.5-.6-1.8.5-3.6 2.2-4.3l8.1-3.2-10.8-2.2c-2.8-.6-4.4-3.5-3.4-6.1.5-1.5 1.5-2.6 3-3.3z"
+        />
+        <path class="plane-trail" d="M18 25l18-8M20 39l18 8" />
+      </svg>
+    </div>
+
+    <div id="truck-scene" class="truck-scene" aria-hidden="true">
+      <div class="truck-loader">
+        <div class="truckWrapper">
+          <div class="truckBody">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 198 93"
+              class="trucksvg"
+            >
+              <path
+                stroke-width="3"
+                stroke="#282828"
+                fill="#F83D3D"
+                d="M135 22.5H177.264C178.295 22.5 179.22 23.133 179.594 24.0939L192.33 56.8443C192.442 57.1332 192.5 57.4404 192.5 57.7504V89C192.5 90.3807 191.381 91.5 190 91.5H135C133.619 91.5 132.5 90.3807 132.5 89V25C132.5 23.6193 133.619 22.5 135 22.5Z"
+              ></path>
+              <path
+                stroke-width="3"
+                stroke="#282828"
+                fill="#7D7C7C"
+                d="M146 33.5H181.741C182.779 33.5 183.709 34.1415 184.078 35.112L190.538 52.112C191.16 53.748 189.951 55.5 188.201 55.5H146C144.619 55.5 143.5 54.3807 143.5 53V36C143.5 34.6193 144.619 33.5 146 33.5Z"
+              ></path>
+              <path
+                stroke-width="2"
+                stroke="#282828"
+                fill="#282828"
+                d="M150 65C150 65.39 149.763 65.8656 149.127 66.2893C148.499 66.7083 147.573 67 146.5 67C145.427 67 144.501 66.7083 143.873 66.2893C143.237 65.8656 143 65.39 143 65C143 64.61 143.237 64.1344 143.873 63.7107C144.501 63.2917 145.427 63 146.5 63C147.573 63 148.499 63.2917 149.127 63.7107C149.763 64.1344 150 64.61 150 65Z"
+              ></path>
+              <rect
+                stroke-width="2"
+                stroke="#282828"
+                fill="#FFFCAB"
+                rx="1"
+                height="7"
+                width="5"
+                y="63"
+                x="187"
+              ></rect>
+              <rect
+                stroke-width="2"
+                stroke="#282828"
+                fill="#282828"
+                rx="1"
+                height="11"
+                width="4"
+                y="81"
+                x="193"
+              ></rect>
+              <rect
+                stroke-width="3"
+                stroke="#282828"
+                fill="#DFDFDF"
+                rx="2.5"
+                height="90"
+                width="121"
+                y="1.5"
+                x="6.5"
+              ></rect>
+              <rect
+                stroke-width="2"
+                stroke="#282828"
+                fill="#DFDFDF"
+                rx="2"
+                height="4"
+                width="6"
+                y="84"
+                x="1"
+              ></rect>
+            </svg>
+          </div>
+          <div class="truckTires">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 30 30"
+              class="tiresvg"
+            >
+              <circle
+                stroke-width="3"
+                stroke="#282828"
+                fill="#282828"
+                r="13.5"
+                cy="15"
+                cx="15"
+              ></circle>
+              <circle fill="#DFDFDF" r="7" cy="15" cx="15"></circle>
+            </svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 30 30"
+              class="tiresvg"
+            >
+              <circle
+                stroke-width="3"
+                stroke="#282828"
+                fill="#282828"
+                r="13.5"
+                cy="15"
+                cx="15"
+              ></circle>
+              <circle fill="#DFDFDF" r="7" cy="15" cx="15"></circle>
+            </svg>
+          </div>
+          <div class="road"></div>
+
+          <svg
+            xml:space="preserve"
+            viewBox="0 0 453.459 453.459"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            xmlns="http://www.w3.org/2000/svg"
+            id="Capa_1"
+            version="1.1"
+            fill="#000000"
+            class="lampPost"
+          >
+            <path
+              d="M252.882,0c-37.781,0-68.686,29.953-70.245,67.358h-6.917v8.954c-26.109,2.163-45.463,10.011-45.463,19.366h9.993c-1.65,5.146-2.507,10.54-2.507,16.017c0,28.956,23.558,52.514,52.514,52.514c28.956,0,52.514-23.558,52.514-52.514c0-5.478-0.856-10.872-2.506-16.017h9.992c0-9.354-19.352-17.204-45.463-19.366v-8.954h-6.149C200.189,38.779,223.924,16,252.882,16c29.952,0,54.32,24.368,54.32,54.32c0,28.774-11.078,37.009-25.105,47.437c-17.444,12.968-37.216,27.667-37.216,78.884v113.914h-0.797c-5.068,0-9.174,4.108-9.174,9.177c0,2.844,1.293,5.383,3.321,7.066c-3.432,27.933-26.851,95.744-8.226,115.459v11.202h45.75v-11.202c18.625-19.715-4.794-87.527-8.227-115.459c2.029-1.683,3.322-4.223,3.322-7.066c0-5.068-4.107-9.177-9.176-9.177h-0.795V196.641c0-43.174,14.942-54.283,30.762-66.043c14.793-10.997,31.559-23.461,31.559-60.277C323.202,31.545,291.656,0,252.882,0zM232.77,111.694c0,23.442-19.071,42.514-42.514,42.514c-23.442,0-42.514-19.072-42.514-42.514c0-5.531,1.078-10.957,3.141-16.017h78.747C231.693,100.736,232.77,106.162,232.77,111.694z"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
