@@ -33,7 +33,7 @@ body {
   margin: 0;
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   padding: 24px;
   background:
@@ -60,7 +60,7 @@ body {
 }
 
 .bg-blur {
-  position: absolute;
+  position: fixed;
   width: 420px;
   height: 420px;
   border-radius: 50%;
@@ -72,11 +72,30 @@ body {
   top: 6%;
   left: 8%;
   background: rgba(108, 92, 231, 0.35);
+  animation: driftOne 16s ease-in-out infinite alternate;
 }
 .blur-two {
   right: 10%;
   bottom: 10%;
   background: rgba(59, 130, 246, 0.3);
+  animation: driftTwo 20s ease-in-out infinite alternate;
+}
+
+@keyframes driftOne {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    transform: translate(24px, 28px) scale(1.08);
+  }
+}
+@keyframes driftTwo {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    transform: translate(-26px, -22px) scale(1.06);
+  }
 }
 
 .app-shell {
@@ -247,6 +266,37 @@ h1 {
 }
 .room-badge span {
   color: var(--muted);
+}
+
+.copy-code-btn {
+  display: inline-grid;
+  place-items: center;
+  width: auto;
+  padding: 0;
+  margin-left: 4px;
+  border-radius: 6px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+.copy-code-btn svg {
+  width: 15px;
+  height: 15px;
+  display: block;
+}
+.copy-code-btn:hover:not(:disabled) {
+  color: var(--accent);
+  background: rgba(110, 168, 254, 0.1);
+  transform: none;
+  box-shadow: none;
+  filter: none;
+}
+.copy-code-btn:active:not(:disabled) {
+  transform: none;
+}
+.copy-code-btn.copied {
+  color: var(--success);
 }
 
 .peer-indicator {
@@ -652,6 +702,19 @@ input:focus,
   opacity: 1;
 }
 
+/* Below this width, the card takes up nearly the full viewport, leaving
+   no visible lane on either side for the truck to drive through before
+   going off-screen — so the animation would just look cramped/broken.
+   The progress bar already communicates transfer status clearly on its
+   own, so we simply don't show the truck here rather than trying to
+   force it into a space that doesn't exist. */
+@media (max-width: 640px) {
+  .truck-scene.send,
+  .truck-scene.download {
+    opacity: 0 !important;
+  }
+}
+
 .truck-loader {
   position: absolute;
   top: 50%;
@@ -777,7 +840,7 @@ input:focus,
 
 @media (max-width: 480px) {
   body {
-    padding: 14px;
+    padding: 20px 16px;
   }
   .app-card {
     padding: 22px 18px 18px;
@@ -800,14 +863,6 @@ input:focus,
   .qr-code canvas {
     width: 130px;
     height: 130px;
-  }
-
-  .truck-loader {
-    width: 220px;
-    height: 130px;
-  }
-  .truckWrapper {
-    transform: scale(0.9);
   }
 }
 

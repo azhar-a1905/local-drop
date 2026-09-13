@@ -50,7 +50,7 @@ const qrWrap = document.getElementById("qr-wrap");
 const qrCodeEl = document.getElementById("qr-code");
 const shareLinkInput = document.getElementById("share-link");
 const copyLinkBtn = document.getElementById("copy-link-btn");
-const copyRoomBtn = document.getElementById("copy-room-btn");
+const copyRoomCodeBtn = document.getElementById("copy-room-code-btn");
 
 // 16KB is a conservative chunk size that stays well under typical
 // RTCDataChannel message size limits across browsers.
@@ -206,9 +206,12 @@ function setupDataChannel(channel) {
       incomingFileMeta = JSON.parse(event.data);
       incomingChunks = [];
       incomingBytesReceived = 0;
-      animateTruck("download");
-      setTransferStatus(`Receiving "${incomingFileMeta.name}"…`, true);
       downloadLink.classList.add("hidden");
+      setTransferStatus(`Incoming file "${incomingFileMeta.name}"…`, true);
+      // Small deliberate beat before the truck drives in — gives the
+      // loader a moment to register rather than the truck appearing
+      // instantly, which otherwise reads as abrupt.
+      setTimeout(() => animateTruck("download"), 350);
       console.log("[TRACE] incoming file metadata:", incomingFileMeta);
       return;
     }
@@ -245,14 +248,7 @@ function finishIncomingFile() {
 
   downloadLink.href = url;
   downloadLink.download = incomingFileMeta.name;
-  // Keep the download button label generic — filename is shown above.
-  downloadLink.textContent = "Download received file";
-  // Preserve the original filename in a tooltip and accessible label.
-  downloadLink.title = incomingFileMeta.name;
-  downloadLink.setAttribute(
-    "aria-label",
-    `Download received file (${incomingFileMeta.name})`,
-  );
+  downloadLink.textContent = `Download "${incomingFileMeta.name}"`;
   downloadLink.classList.remove("hidden");
 
   setTransferStatus(
@@ -422,13 +418,13 @@ function connectSignaling(roomCode) {
   socket.addEventListener("close", () => {
     setStatus("Disconnected from server", "error");
     setPeerIndicator("offline", "Offline");
-    joinBtn.disabled = false;
+    setJoinBtnLoading(false);
   });
 
   socket.addEventListener("error", () => {
     setStatus("Could not reach signaling server — is it running?", "error");
     setPeerIndicator("offline", "Offline");
-    joinBtn.disabled = false;
+    setJoinBtnLoading(false);
   });
 }
 
@@ -579,36 +575,27 @@ copyLinkBtn.addEventListener("click", async () => {
   }
 });
 
-// Copy the active room code (small button next to the badge). The
-// element may not exist for users on the join flow, so guard access.
-if (typeof copyRoomBtn !== "undefined" && copyRoomBtn) {
-  copyRoomBtn.addEventListener("click", async () => {
-    const roomCode = roomCodeDisplay.textContent.trim();
-    if (!roomCode || roomCode === "—") return;
+const COPY_ICON_SVG = copyRoomCodeBtn.innerHTML;
+const CHECK_ICON_SVG = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+  <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`;
 
-    try {
-      await navigator.clipboard.writeText(roomCode);
-      const original = copyRoomBtn.textContent;
-      copyRoomBtn.textContent = "Copied!";
-      setTimeout(() => {
-        copyRoomBtn.textContent = original;
-      }, 1500);
-    } catch (err) {
-      console.warn("Room code clipboard copy failed:", err);
-      // Fallback for older browsers
-      const ta = document.createElement("textarea");
-      ta.value = roomCode;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand("copy");
-      document.body.removeChild(ta);
-      copyRoomBtn.textContent = "Copied!";
-      setTimeout(() => {
-        copyRoomBtn.textContent = "Copy";
-      }, 1500);
-    }
-  });
-}
+copyRoomCodeBtn.addEventListener("click", async () => {
+  const code = roomCodeDisplay.textContent;
+  if (!code || code === "—") return;
+
+  try {
+    await navigator.clipboard.writeText(code);
+    copyRoomCodeBtn.innerHTML = CHECK_ICON_SVG;
+    copyRoomCodeBtn.classList.add("copied");
+    setTimeout(() => {
+      copyRoomCodeBtn.innerHTML = COPY_ICON_SVG;
+      copyRoomCodeBtn.classList.remove("copied");
+    }, 1200);
+  } catch (err) {
+    console.warn("Clipboard write failed for room code:", err);
+  }
+});
 
 /**
  * If the page was opened with ?room=XXXXXX in the URL (e.g. from
@@ -624,10 +611,19 @@ function autoJoinFromUrl() {
   }
 }
 
+const JOIN_BTN_DEFAULT_TEXT = joinBtn.textContent;
+
+function setJoinBtnLoading(isLoading) {
+  joinBtn.disabled = isLoading;
+  joinBtn.innerHTML = isLoading
+    ? `<span class="mini-loader"></span>Connecting…`
+    : JOIN_BTN_DEFAULT_TEXT;
+}
+
 joinBtn.addEventListener("click", () => {
   const typed = roomInput.value.trim();
   const roomCode = typed || randomRoomCode();
-  joinBtn.disabled = true;
+  setJoinBtnLoading(true);
   setStatus("Connecting…", "neutral");
   connectSignaling(roomCode);
 });
@@ -657,8 +653,11 @@ sendBtn.addEventListener("click", () => {
     transferStatus.textContent = "Choose a file first.";
     return;
   }
-  animateTruck("send");
-  sendFile(file);
+  setTransferStatus(`Preparing "${file.name}"…`, true);
+  setTimeout(() => {
+    animateTruck("send");
+    sendFile(file);
+  }, 350);
 });
 
 function setTransferStatus(message, isLoading = false) {

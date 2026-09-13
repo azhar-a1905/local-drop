@@ -14,11 +14,7 @@
       <div class="app-card">
         <header class="topbar">
           <div class="brand-mark" aria-hidden="true">
-            <svg
-              viewBox="0 0 64 64"
-              role="img"
-              aria-label="Local Drop logo"
-            >
+            <svg viewBox="0 0 64 64" role="img" aria-label="Local Drop logo">
               <path class="brand-icon" d="M32 12v26" />
               <path class="brand-icon" d="M20 28l12 12 12-12" />
               <path class="brand-icon" d="M16 48h32" />
@@ -60,6 +56,30 @@
               <p class="eyebrow subtle">Active room</p>
               <div class="room-badge">
                 <span>Room</span> <strong id="room-code-display">—</strong>
+                <button
+                  id="copy-room-code-btn"
+                  type="button"
+                  class="copy-code-btn"
+                  aria-label="Copy room code"
+                  title="Copy room code"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <rect
+                      x="8"
+                      y="8"
+                      width="12"
+                      height="12"
+                      rx="2"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                    />
+                    <path
+                      d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                    />
+                  </svg>
+                </button>
               </div>
             </div>
             <span id="peer-indicator" class="peer-indicator offline"
@@ -253,6 +273,7 @@
       target="_blank"
       rel="noopener noreferrer"
       class="creator-credit"
-    >Built by Mohammed Azhar</a>
+      >Built by Mohammed Azhar</a
+    >
   </body>
 </html>
