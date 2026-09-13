@@ -56,8 +56,7 @@ body {
     "Segoe UI",
     sans-serif;
   position: relative;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .bg-blur {
@@ -87,13 +86,13 @@ body {
 }
 
 .app-card {
-  background: #0b1018;
-  border: 1px solid rgba(148, 163, 184, 0.12);
+  background: rgba(11, 16, 24, 0.66);
+  border: 1px solid var(--border);
   border-radius: 28px;
   padding: 28px 24px 22px;
-  box-shadow: 0 10px 20px rgba(2, 6, 23, 0.2);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
 .topbar {
@@ -111,11 +110,11 @@ body {
   border-radius: 14px;
   background: linear-gradient(
     135deg,
-    rgba(125, 183, 255, 0.2),
-    rgba(59, 130, 246, 0.9)
+    rgba(110, 168, 254, 0.22),
+    rgba(59, 130, 246, 0.72)
   );
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 10px 18px rgba(59, 130, 246, 0.2);
   font-size: 1.25rem;
   overflow: hidden;
 }
@@ -135,23 +134,24 @@ body {
   stroke-linejoin: round;
 }
 
-.brand-mark rect,
 .brand-mark path,
-.brand-mark circle {
+.flight-plane path {
   fill: rgba(255, 255, 255, 0.96);
-  stroke: rgba(255, 255, 255, 0.96);
-  stroke-width: 1.6;
+  stroke: rgba(255, 255, 255, 0.92);
+  stroke-width: 1.5;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-
-.brand-mark circle {
-  fill: #ffffff;
-  stroke: #ffffff;
+.brand-mark circle,
+.flight-plane circle {
+  fill: rgba(255, 255, 255, 0.92);
 }
-
-.brand-mark path {
+.brand-mark .plane-trail,
+.flight-plane .plane-trail {
   fill: none;
+  stroke: rgba(191, 219, 254, 0.9);
+  stroke-width: 2;
+  stroke-dasharray: 4 5;
 }
 
 .eyebrow {
@@ -241,40 +241,12 @@ h1 {
   border-radius: 12px;
   font-size: 0.84rem;
   color: var(--text);
-  background: rgba(15, 23, 42, 0.95);
-  border: 1px solid rgba(148, 163, 184, 0.14);
-  box-shadow: none;
+  background: rgba(110, 168, 254, 0.08);
+  border: 1px solid rgba(110, 168, 254, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 .room-badge span {
   color: var(--muted);
-}
-
-.copy-room-btn {
-  appearance: none;
-  border: 1px solid rgba(110, 168, 254, 0.3);
-  border-radius: 10px;
-  background: rgba(15, 23, 42, 0.9);
-  color: var(--text);
-  padding: 6px 8px;
-  min-width: 52px;
-  width: auto;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  cursor: pointer;
-  box-shadow: none;
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.18s ease;
-}
-.copy-room-btn:hover:not(:disabled) {
-  background: rgba(110, 168, 254, 0.18);
-  border-color: rgba(110, 168, 254, 0.42);
-  transform: translateY(-1px);
-}
-.copy-room-btn:active:not(:disabled) {
-  transform: translateY(0);
 }
 
 .peer-indicator {
@@ -536,11 +508,6 @@ input:focus,
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease;
-
-  /* Prevent long filenames from breaking layout — show ellipsis */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .download-link:hover {
   transform: translateY(-1px);
@@ -863,6 +830,21 @@ input:focus,
   }
 }
 
-.hidden {
-  display: none !important;
+.creator-credit {
+  position: fixed;
+  left: 16px;
+  bottom: 14px;
+  z-index: 6;
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-decoration: none;
+  opacity: 0.7;
+  transition:
+    opacity 0.15s ease,
+    color 0.15s ease;
+}
+
+.creator-credit:hover {
+  opacity: 1;
+  color: var(--accent);
 }
