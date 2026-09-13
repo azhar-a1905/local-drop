@@ -5,7 +5,7 @@ Send a file straight from one browser to another — no upload, no
 cloud storage, no file size limits imposed by a server, since the
 file never touches the server at all.
 
-**Live demo:** _add your deployed link here once live_
+**Live demo:** (https://local-drop-sigma.vercel.app/)
 
 ## How it works
 
