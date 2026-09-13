@@ -16,7 +16,7 @@
 // hostname (no protocol, no trailing slash) — e.g. "local-drop-backend.onrender.com".
 // The app automatically switches between ws:// (local) and wss:// (deployed,
 // since Render serves over https) based on where the page itself is running.
-const REMOTE_SIGNALING_HOST = "REPLACE_WITH_YOUR_RENDER_HOSTNAME.onrender.com";
+const REMOTE_SIGNALING_HOST = "local-drop-inoc.onrender.com";
 const SIGNALING_URL =
   window.location.hostname === "localhost" ||
   window.location.hostname === "127.0.0.1"
