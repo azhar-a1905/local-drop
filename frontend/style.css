@@ -536,6 +536,11 @@ input:focus,
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease;
+
+  /* Prevent long filenames from breaking layout — show ellipsis */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .download-link:hover {
   transform: translateY(-1px);

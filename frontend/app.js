@@ -50,6 +50,7 @@ const qrWrap = document.getElementById("qr-wrap");
 const qrCodeEl = document.getElementById("qr-code");
 const shareLinkInput = document.getElementById("share-link");
 const copyLinkBtn = document.getElementById("copy-link-btn");
+const copyRoomBtn = document.getElementById("copy-room-btn");
 
 // 16KB is a conservative chunk size that stays well under typical
 // RTCDataChannel message size limits across browsers.
@@ -244,7 +245,14 @@ function finishIncomingFile() {
 
   downloadLink.href = url;
   downloadLink.download = incomingFileMeta.name;
-  downloadLink.textContent = `Download "${incomingFileMeta.name}"`;
+  // Keep the download button label generic — filename is shown above.
+  downloadLink.textContent = "Download received file";
+  // Preserve the original filename in a tooltip and accessible label.
+  downloadLink.title = incomingFileMeta.name;
+  downloadLink.setAttribute(
+    "aria-label",
+    `Download received file (${incomingFileMeta.name})`,
+  );
   downloadLink.classList.remove("hidden");
 
   setTransferStatus(
@@ -570,6 +578,37 @@ copyLinkBtn.addEventListener("click", async () => {
     shareLinkInput.select();
   }
 });
+
+// Copy the active room code (small button next to the badge). The
+// element may not exist for users on the join flow, so guard access.
+if (typeof copyRoomBtn !== "undefined" && copyRoomBtn) {
+  copyRoomBtn.addEventListener("click", async () => {
+    const roomCode = roomCodeDisplay.textContent.trim();
+    if (!roomCode || roomCode === "—") return;
+
+    try {
+      await navigator.clipboard.writeText(roomCode);
+      const original = copyRoomBtn.textContent;
+      copyRoomBtn.textContent = "Copied!";
+      setTimeout(() => {
+        copyRoomBtn.textContent = original;
+      }, 1500);
+    } catch (err) {
+      console.warn("Room code clipboard copy failed:", err);
+      // Fallback for older browsers
+      const ta = document.createElement("textarea");
+      ta.value = roomCode;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      copyRoomBtn.textContent = "Copied!";
+      setTimeout(() => {
+        copyRoomBtn.textContent = "Copy";
+      }, 1500);
+    }
+  });
+}
 
 /**
  * If the page was opened with ?room=XXXXXX in the URL (e.g. from
